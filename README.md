@@ -56,15 +56,28 @@ git clone https://github.com/JoshGJPI/neosmart-pen-explorer.git
 # Navigate to the directory
 cd neosmart-pen-explorer
 
-# Serve using a local web server (optional)
-# Using Python
-python -m http.server
+# Install dependencies
+npm install
 
-# Using Node.js
-npx http-server .
+# Start local development server
+npm start
 ```
 
-Then open your browser to http://localhost:8000 or http://localhost:8080 (depending on the server).
+Then open your browser to http://localhost:8080
+
+## Deployment
+
+To deploy to GitHub Pages:
+
+```bash
+# Make sure you have all the dependencies installed
+npm install
+
+# Deploy to GitHub Pages
+npm run deploy
+```
+
+This will deploy the content to the gh-pages branch and make it available at your GitHub Pages URL (e.g., https://username.github.io/neosmart-pen-explorer/).
 
 ## Privacy
 

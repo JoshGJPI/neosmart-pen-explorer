@@ -6,18 +6,50 @@
     <title>NeoSmartpen Data Explorer</title>
     <meta name="description" content="Explore and backup NeoSmartpen data without erasing it from the pen">
     <link rel="stylesheet" href="./styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✏️</text></svg>">
     
     <!-- Load Fabric.js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.1/fabric.min.js"></script>
     
-    <!-- Create SDK global object -->
+    <!-- Load SDK with proper module handling -->
     <script>
-        // Create a global object to hold the SDK
+        // Create environment for SDK
+        window.global = window;
+        window.process = { env: { NODE_ENV: 'production' } };
+        
+        // Initialize SDK container
         window.WebPenSDK = {};
+        
+        // Load and wrap SDK
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('./libs/web-pen-sdk.min.js')
+                .then(response => response.text())
+                .then(sdkScript => {
+                    const wrappedScript = `
+                        (function(window) {
+                            const module = { exports: {} };
+                            const exports = module.exports;
+                            
+                            ${sdkScript}
+                            
+                            // Copy exports to WebPenSDK
+                            Object.assign(window.WebPenSDK, module.exports);
+                            
+                            // Signal SDK loaded
+                            document.dispatchEvent(new CustomEvent('sdk-loaded'));
+                        })(window);
+                    `;
+                    
+                    const scriptElement = document.createElement('script');
+                    scriptElement.textContent = wrappedScript;
+                    document.head.appendChild(scriptElement);
+                })
+                .catch(error => {
+                    console.error('Failed to load SDK:', error);
+                    document.dispatchEvent(new CustomEvent('sdk-failed'));
+                });
+        });
     </script>
-    
-    <!-- Load SDK -->
-    <script src="./libs/web-pen-sdk.min.js"></script>
 </head>
 <body>
     <div class="container">

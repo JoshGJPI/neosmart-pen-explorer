@@ -1,0 +1,30 @@
+{
+  "name": "neosmart-pen-explorer",
+  "version": "1.0.0",
+  "description": "A web application to explore and backup data from NeoSmartpen devices without erasing it from the pen",
+  "main": "app.js",
+  "scripts": {
+    "start": "http-server . -p 8080 -c-1",
+    "deploy": "gh-pages -d .",
+    "predeploy": "echo 'Preparing for GitHub Pages deployment...'"
+  },
+  "keywords": [
+    "neosmart",
+    "smartpen",
+    "data",
+    "backup",
+    "bluetooth"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "gh-pages": "^6.1.0",
+    "http-server": "^14.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoshGJPI/neosmart-pen-explorer.git"
+  },
+  "homepage": "https://joshgjpi.github.io/neosmart-pen-explorer"
+}
