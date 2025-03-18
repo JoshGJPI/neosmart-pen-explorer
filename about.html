@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoSmartpen Data Explorer - README</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #4a86e8;
+        }
+        .note {
+            background-color: #f5f5f5;
+            border-left: 4px solid #4a86e8;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 10px 15px;
+            margin: 15px 0;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f0f0f0;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        ul li, ol li {
+            margin-bottom: 8px;
+        }
+        .browser-logo {
+            vertical-align: middle;
+            margin-right: 5px;
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>NeoSmartpen Data Explorer</h1>
+    <p>This application lets you explore and backup data from your NeoSmartpen without removing or erasing it from the pen.</p>
+    
+    <div class="note">
+        <strong>Important:</strong> This application runs locally in your browser and does not send any data to external servers. All data stays on your computer.
+    </div>
+    
+    <h2>Browser Requirements</h2>
+    <p>This application requires a browser that supports the Web Bluetooth API:</p>
+    <ul>
+        <li><img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg" class="browser-logo" alt="Chrome"> Google Chrome</li>
+        <li><img src="https://upload.wikimedia.org/wikipedia/commons/9/98/Microsoft_Edge_logo_%282019%29.svg" class="browser-logo" alt="Edge"> Microsoft Edge</li>
+    </ul>
+    
+    <div class="warning">
+        <strong>Note:</strong> This application will not work in Firefox, Safari, or Internet Explorer as they do not support the Web Bluetooth API.
+    </div>
+    
+    <h2>How to Use</h2>
+    <ol>
+        <li>Open <code>index.html</code> in Chrome or Edge.</li>
+        <li>Click the <strong>Connect Pen</strong> button to establish a Bluetooth connection with your NeoSmartpen.</li>
+        <li>Select your pen from the Bluetooth device list that appears.</li>
+        <li>Once connected, the application will display a list of notes stored on the pen.</li>
+        <li>Click on a note to view its pages.</li>
+        <li>Click on a page to view its data.</li>
+        <li>Use the dropdown menu to switch between raw JSON data and visual preview.</li>
+        <li>Use the <strong>Download Data</strong> button to export data for the selected page.</li>
+        <li>Use the <strong>Backup All Data</strong> button to export all data from the pen.</li>
+    </ol>
+    
+    <h2>Features</h2>
+    <ul>
+        <li><strong>Non-destructive Reading:</strong> Views pen data without deleting anything.</li>
+        <li><strong>Visual Previews:</strong> See your handwritten notes visualized on screen.</li>
+        <li><strong>Data Export:</strong> Save pen data as JSON files for backup or analysis.</li>
+        <li><strong>Offline Access:</strong> Works completely offline, no internet required.</li>
+    </ul>
+    
+    <h2>Local File Limitations</h2>
+    <p>Due to browser security restrictions when running local HTML files:</p>
+    <ul>
+        <li>The application uses a fallback implementation for demonstration purposes.</li>
+        <li>For full functionality, consider using a local web server or hosting the files.</li>
+    </ul>
+    
+    <div class="note">
+        <strong>Tip:</strong> If you have Node.js installed, you can easily run a local server:
+        <ol>
+            <li>Open a command prompt in this directory</li>
+            <li>Run: <code>npx http-server .</code></li>
+            <li>Open <a href="http://localhost:8080">http://localhost:8080</a> in your browser</li>
+        </ol>
+    </div>
+    
+    <h2>Troubleshooting</h2>
+    <ul>
+        <li><strong>Pen not connecting:</strong> Make sure your pen is turned on and in Bluetooth pairing mode.</li>
+        <li><strong>Bluetooth permission denied:</strong> You need to grant Bluetooth permission in your browser.</li>
+        <li><strong>Visual preview not working:</strong> Make sure Fabric.js is loading correctly (check browser console).</li>
+    </ul>
+    
+    <hr>
+    <p>Created specifically for exploring NeoSmartpen data structure. Not affiliated with NeoLab Convergence Inc.</p>
+</body>
+</html>
