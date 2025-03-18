@@ -23,29 +23,62 @@ class DataManager {
     /**
      * Initialize the canvas for visualizing strokes
      */
-    setCanvas(canvasElement) {
+    async setCanvas(canvasElement) {
         this.canvas = canvasElement;
         
-        // Check if Fabric.js is available
-        if (typeof fabric !== 'undefined') {
+        // Try to load Fabric.js if it's not already available
+        if (typeof fabric === 'undefined') {
+            console.warn('Fabric.js not available, attempting to load dynamically');
+            
             try {
-                // Initialize Fabric.js canvas
-                this.fabricCanvas = new fabric.Canvas(canvasElement, {
-                    isDrawingMode: false,
-                    selection: false,
-                    backgroundColor: '#ffffff'
-                });
-                console.log('Canvas initialized with Fabric.js');
-            } catch (error) {
-                console.error('Error initializing Fabric.js canvas:', error);
+                await this.loadFabricJs();
+                console.log('Fabric.js loaded dynamically');
+            } catch (loadError) {
+                console.error('Failed to load Fabric.js dynamically:', loadError);
                 this.fabricCanvas = null;
                 this.drawFallbackCanvas(canvasElement);
+                return;
             }
-        } else {
-            console.warn('Fabric.js not available, using fallback canvas');
+        }
+        
+        try {
+            // Initialize Fabric.js canvas
+            this.fabricCanvas = new fabric.Canvas(canvasElement, {
+                isDrawingMode: false,
+                selection: false,
+                backgroundColor: '#ffffff'
+            });
+            console.log('Canvas initialized with Fabric.js');
+        } catch (error) {
+            console.error('Error initializing Fabric.js canvas:', error);
             this.fabricCanvas = null;
             this.drawFallbackCanvas(canvasElement);
         }
+    }
+    
+    /**
+     * Load Fabric.js dynamically
+     */
+    loadFabricJs() {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.1/fabric.min.js';
+            script.integrity = 'sha512-nPzvcIhv7AtvjpNcnbly9UsXVHz4N8eXSklmHzF8SsVWsLr6wRG+wTkq0pKV4xEFWNNTxOtId2VBSvCtKU4V2g==';
+            script.crossOrigin = 'anonymous';
+            script.referrerPolicy = 'no-referrer';
+            
+            script.onload = () => {
+                console.log('Fabric.js loaded successfully');
+                resolve();
+            };
+            
+            script.onerror = (error) => {
+                console.error('Error loading Fabric.js:', error);
+                reject(new Error('Failed to load Fabric.js'));
+            };
+            
+            document.head.appendChild(script);
+        });
     }
     
     /**

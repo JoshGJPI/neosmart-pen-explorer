@@ -29,9 +29,14 @@ class PenConnector {
      * Initialize the pen connector by setting up SDK callbacks
      */
     initialize() {
+        console.log('Initializing pen connector...');
+        console.log('WebPenSDK:', window.WebPenSDK);
+        
         // Check if PenHelper is available
         if (!window.WebPenSDK || !window.WebPenSDK.PenHelper) {
             console.error('Web Pen SDK not properly loaded');
+            console.log('WebPenSDK object:', window.WebPenSDK);
+            
             if (this.onError) {
                 this.onError('Web Pen SDK not properly loaded. Please check your connection and reload the page.');
             }
@@ -39,11 +44,26 @@ class PenConnector {
         }
         
         // Set up SDK callback handlers
-        window.WebPenSDK.PenHelper.messageCallback = (mac, type, args) => {
-            this.handlePenMessage(mac, type, args);
-        };
-        
-        return true;
+        try {
+            window.WebPenSDK.PenHelper.messageCallback = (mac, type, args) => {
+                this.handlePenMessage(mac, type, args);
+            };
+            
+            // Ensure dotCallback is also set up
+            window.WebPenSDK.PenHelper.dotCallback = (mac, dot) => {
+                // We're not handling dots directly, but the SDK requires this callback
+                console.log('Dot received:', dot);
+            };
+            
+            console.log('Pen connector initialized successfully');
+            return true;
+        } catch (error) {
+            console.error('Error setting up SDK callbacks:', error);
+            if (this.onError) {
+                this.onError(`Failed to initialize pen: ${error.message}`);
+            }
+            return false;
+        }
     }
     
     /**
@@ -52,16 +72,39 @@ class PenConnector {
     async connectPen() {
         try {
             if (!this.isConnected) {
+                console.log('Attempting to connect to pen...');
+                
                 if (!this.initialize()) {
+                    console.error('Initialization failed, cannot connect to pen');
                     return false;
                 }
                 
-                await window.WebPenSDK.PenHelper.scanPen();
-                return true;
+                console.log('Initialization successful, scanning for pen...');
+                
+                try {
+                    await window.WebPenSDK.PenHelper.scanPen();
+                    console.log('Pen scan completed successfully');
+                    return true;
+                } catch (scanError) {
+                    console.error('Error during pen scanning:', scanError);
+                    
+                    // Check if this is a user cancellation (not a true error)
+                    if (scanError.name === 'NotFoundError' || scanError.message.includes('cancelled')) {
+                        if (this.onError) {
+                            this.onError('Bluetooth device selection was cancelled');
+                        }
+                    } else {
+                        // Real error
+                        if (this.onError) {
+                            this.onError(`Failed to scan for pen: ${scanError.message}`);
+                        }
+                    }
+                    return false;
+                }
             }
             return false;
         } catch (error) {
-            console.error('Error connecting to pen:', error);
+            console.error('Unexpected error connecting to pen:', error);
             if (this.onError) {
                 this.onError(`Failed to connect to pen: ${error.message}`);
             }

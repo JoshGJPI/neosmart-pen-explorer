@@ -2,7 +2,8 @@
  * NeoSmartpen Data Explorer
  * Main application script
  */
-document.addEventListener('DOMContentLoaded', function() {
+// Initialize the application when everything is ready
+function initializeApp() {
     console.log('NeoSmartpen Data Explorer loaded');
     
     // Check if the Web Bluetooth API is available
@@ -14,28 +15,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Check if the SDK is available
-    if (!window.WebPenSDK || (!window.WebPenSDK.PenHelper && !window.exports)) {
+    if (!window.WebPenSDK || !window.WebPenSDK.PenHelper) {
         console.error('Web Pen SDK not loaded. Using fallback implementation.');
         
-        // If SDK is loaded via script tag with exports object, convert to window.WebPenSDK
-        if (window.exports) {
-            window.WebPenSDK = window.exports;
-            console.log('Converted exports to WebPenSDK object');
-        } else {
-            // Create a fallback SDK with a PenHelper object for testing
-            window.WebPenSDK = {
-                PenHelper: createFallbackPenHelper(),
-                PenMessageType: createFallbackPenMessageType()
-            };
-            
-            console.warn('Created fallback SDK for testing.');
-        }
+        // Create a fallback SDK with a PenHelper object for testing
+        window.WebPenSDK = {
+            PenHelper: createFallbackPenHelper(),
+            PenMessageType: createFallbackPenMessageType()
+        };
+        
+        console.warn('Created fallback SDK for testing.');
+    } else {
+        console.log('WebPenSDK loaded successfully');
     }
     
     // Check if Fabric.js is available
     if (typeof fabric === 'undefined') {
         console.error('Fabric.js library not loaded');
-        alert('Unable to load Fabric.js library. Canvas visualization will not work correctly.');
+        console.warn('Canvas visualization will not work correctly.');
+        // Try to load Fabric.js dynamically
+        const fabricScript = document.createElement('script');
+        fabricScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.1/fabric.min.js';
+        document.head.appendChild(fabricScript);
     }
     
     // Initialize the application
@@ -47,6 +48,31 @@ document.addEventListener('DOMContentLoaded', function() {
     window.penConnector = penConnector;
     window.dataManager = dataManager;
     window.uiController = uiController;
+}
+
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, waiting for SDK...');
+    
+    // Listen for SDK loaded event
+    document.addEventListener('sdk-loaded', function() {
+        console.log('SDK loaded event received');
+        initializeApp();
+    });
+    
+    // Listen for SDK failure event
+    document.addEventListener('sdk-failed', function() {
+        console.error('SDK failed to load');
+        initializeApp(); // Still initialize with fallback
+    });
+    
+    // Fallback: If neither event fires within 3 seconds, initialize anyway
+    setTimeout(function() {
+        if (!window.penConnector) {
+            console.warn('SDK loading timed out, initializing with fallback');
+            initializeApp();
+        }
+    }, 3000);
 });
 
 /**
