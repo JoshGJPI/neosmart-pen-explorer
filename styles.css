@@ -10,6 +10,53 @@
     --panel-background: #f9f9f9;
 }
 
+/* Info button */
+.info-btn {
+    background-color: transparent;
+    color: #666;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.info-btn:hover {
+    background-color: #f0f0f0;
+    color: var(--primary-color);
+}
+
+/* Bluetooth info modal */
+.bluetooth-info {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid var(--primary-color);
+    display: none;
+}
+
+.bluetooth-info.visible {
+    display: block;
+}
+
+.bluetooth-info h3 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+
+.bluetooth-info ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.bluetooth-info li {
+    margin-bottom: 8px;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;

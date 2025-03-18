@@ -2,6 +2,7 @@
  * NeoSmartpen Data Explorer
  * Main application script
  */
+
 // Initialize the application when everything is ready
 function initializeApp() {
     console.log('NeoSmartpen Data Explorer loaded');
@@ -12,6 +13,16 @@ function initializeApp() {
         document.getElementById('connect-btn').disabled = true;
         document.getElementById('connection-status').textContent = 'Bluetooth Not Supported';
         return;
+    } else {
+        // Check if bluetooth is available (may be turned off)
+        navigator.bluetooth.getAvailability().then(isAvailable => {
+            if (!isAvailable) {
+                console.log('Bluetooth is not available on this device or is turned off');
+                document.getElementById('connection-status').textContent = 'Bluetooth Off';
+            } else {
+                console.log('Bluetooth is available on this device');
+            }
+        });
     }
     
     // Check if the SDK is available
@@ -29,14 +40,9 @@ function initializeApp() {
         console.log('WebPenSDK loaded successfully');
     }
     
-    // Check if Fabric.js is available
+    // Check if Fabric.js is available or being loaded
     if (typeof fabric === 'undefined') {
-        console.error('Fabric.js library not loaded');
-        console.warn('Canvas visualization will not work correctly.');
-        // Try to load Fabric.js dynamically
-        const fabricScript = document.createElement('script');
-        fabricScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.1/fabric.min.js';
-        document.head.appendChild(fabricScript);
+        console.log('Fabric.js not loaded yet, canvas visualization will wait for it');
     }
     
     // Initialize the application
@@ -50,7 +56,7 @@ function initializeApp() {
     window.uiController = uiController;
 }
 
-// Wait for DOM to be fully loaded
+// Wait for DOM to be fully loaded and SDK to be ready
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, waiting for SDK...');
     

@@ -8,10 +8,35 @@
     <link rel="stylesheet" href="./styles.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✏️</text></svg>">
     
-    <!-- Load Fabric.js locally -->
-    <script src="./lib/fabric.min.js"></script>
+    <!-- Load Fabric.js from CDN with correct URL and fallback -->
+    <script>
+        function loadFabricJs() {
+            console.log('Loading Fabric.js from local file');
+            const script = document.createElement('script');
+            script.src = './libs/fabric/fabric.min.js';
+            script.onload = function() {
+                console.log('Local Fabric.js loaded successfully');
+            };
+            script.onerror = function() {
+                console.error('Failed to load local Fabric.js');
+            };
+            document.head.appendChild(script);
+        }
+
+        // Try loading from unpkg
+        const unpkgScript = document.createElement('script');
+        unpkgScript.src = 'https://unpkg.com/fabric@5.3.1/dist/fabric.min.js';
+        unpkgScript.onload = function() {
+            console.log('Fabric.js loaded from unpkg successfully');
+        };
+        unpkgScript.onerror = function() {
+            console.error('Failed to load Fabric.js from unpkg');
+            loadFabricJs(); // Try local fallback
+        };
+        document.head.appendChild(unpkgScript);
+    </script>
     
-    <!-- Load SDK with proper module handling -->
+    <!-- Load SDK -->
     <script>
         // Create environment for SDK
         window.global = window;
@@ -20,7 +45,7 @@
         // Initialize SDK container
         window.WebPenSDK = {};
         
-        // Load and wrap SDK
+        // Load SDK after DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
             fetch('./libs/web-pen-sdk.min.js')
                 .then(response => response.text())
@@ -75,6 +100,25 @@
             <div class="button-container">
                 <button id="connect-btn" class="primary-btn">Connect Pen</button>
                 <button id="disconnect-btn" class="secondary-btn hidden">Disconnect</button>
+                <button id="info-btn" class="info-btn" title="Connection Information">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="bluetooth-info" id="bluetooth-info">
+                <h3>Bluetooth Connection Tips</h3>
+                <p>The NeoSmartpen requires specific steps to connect:</p>
+                <ul>
+                    <li>Make sure your pen is turned on (press the power button)</li>
+                    <li>The pen might need to be in pairing mode - try pressing and holding the power button for 3 seconds until the LED blinks</li>
+                    <li>Some pens only show up in Bluetooth when the official NeoStudio app is open</li>
+                    <li>For newer Neo pens, use the small reset button and press it for 1-2 seconds</li>
+                    <li>Web Bluetooth only works in Chrome, Edge, or other Chromium-based browsers</li>
+                </ul>
+                <p>When the "Connect Pen" button is clicked, a Bluetooth device selection dialog should appear. Your pen should show up as "Neo_" followed by numbers.</p>
             </div>
         </div>
 
@@ -145,13 +189,10 @@
         </div>
     </div>
 
-    <!-- Load our application scripts -->
+    <!-- Application scripts -->
     <script src="./pen-connector.js"></script>
     <script src="./data-manager.js"></script>
     <script src="./ui-controller.js"></script>
     <script src="./app.js"></script>
-    
-    <!-- GitHub Pages doesn't need analytics, but if you wanted to add it,
-    you would add the script here -->
 </body>
 </html>

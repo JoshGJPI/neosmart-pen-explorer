@@ -73,6 +73,15 @@ class UIController {
             this.logMessage('Disconnected from pen.');
         });
         
+        // Add info button functionality
+        const infoBtn = document.getElementById('info-btn');
+        const bluetoothInfo = document.getElementById('bluetooth-info');
+        if (infoBtn && bluetoothInfo) {
+            infoBtn.addEventListener('click', () => {
+                bluetoothInfo.classList.toggle('visible');
+            });
+        }
+        
         this.elements.refreshNotesBtn.addEventListener('click', () => {
             this.refreshNoteList();
         });

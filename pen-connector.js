@@ -82,7 +82,29 @@ class PenConnector {
                 console.log('Initialization successful, scanning for pen...');
                 
                 try {
-                    await window.WebPenSDK.PenHelper.scanPen();
+                    // For Neo SmartPen devices, we need specific service UUIDs
+                    // Neo SmartPen often uses Nordic UART service (NUS)
+                    console.log('Using service UUID filters for Neo SmartPen');
+                    const penOptions = {
+                        // Check for device name patterns or known services
+                        filters: [
+                            // Neo SmartPen naming pattern
+                            { namePrefix: 'Neo' },
+                            // Nordic UART Service UUID
+                            { services: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'] },
+                            // Neo SmartPen M1 service UUID
+                            { services: [0x19F1] }
+                        ],
+                        optionalServices: [
+                            'battery_service',
+                            '6e400002-b5a3-f393-e0a9-e50e24dcca9e',
+                            '6e400003-b5a3-f393-e0a9-e50e24dcca9e'
+                        ]
+                    };
+                    
+                    // Show options menu to user
+                    console.log('Waiting for user to select pen from Bluetooth devices...');
+                    await window.WebPenSDK.PenHelper.scanPen(penOptions);
                     console.log('Pen scan completed successfully');
                     return true;
                 } catch (scanError) {

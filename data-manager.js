@@ -26,23 +26,23 @@ class DataManager {
     async setCanvas(canvasElement) {
         this.canvas = canvasElement;
         
-        // Try to load Fabric.js if it's not already available
+        // Wait a moment for Fabric.js to be available
         if (typeof fabric === 'undefined') {
-            console.warn('Fabric.js not available, attempting to load dynamically');
-            
-            try {
-                await this.loadFabricJs();
-                console.log('Fabric.js loaded dynamically');
-            } catch (loadError) {
-                console.error('Failed to load Fabric.js dynamically:', loadError);
-                this.fabricCanvas = null;
-                this.drawFallbackCanvas(canvasElement);
-                return;
-            }
+            console.log('Waiting for Fabric.js to initialize...');
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        
+        // Create fallback canvas if fabric still isn't available
+        if (typeof fabric === 'undefined') {
+            console.warn('Fabric.js not available after waiting');
+            this.fabricCanvas = null;
+            this.drawFallbackCanvas(canvasElement);
+            return;
         }
         
         try {
             // Initialize Fabric.js canvas
+            console.log('Initializing Fabric.js canvas...');
             this.fabricCanvas = new fabric.Canvas(canvasElement, {
                 isDrawingMode: false,
                 selection: false,
@@ -56,30 +56,7 @@ class DataManager {
         }
     }
     
-    /**
-     * Load Fabric.js dynamically
-     */
-    loadFabricJs() {
-        return new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.1/fabric.min.js';
-            script.integrity = 'sha512-nPzvcIhv7AtvjpNcnbly9UsXVHz4N8eXSklmHzF8SsVWsLr6wRG+wTkq0pKV4xEFWNNTxOtId2VBSvCtKU4V2g==';
-            script.crossOrigin = 'anonymous';
-            script.referrerPolicy = 'no-referrer';
-            
-            script.onload = () => {
-                console.log('Fabric.js loaded successfully');
-                resolve();
-            };
-            
-            script.onerror = (error) => {
-                console.error('Error loading Fabric.js:', error);
-                reject(new Error('Failed to load Fabric.js'));
-            };
-            
-            document.head.appendChild(script);
-        });
-    }
+
     
     /**
      * Draw a fallback canvas when Fabric.js is not available

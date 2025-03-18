@@ -41,9 +41,9 @@ The NeoSmartpen app syncs your pen data to its servers and typically removes dat
 
 This application uses:
 - Web Bluetooth API for pen communication
-- Fabric.js for stroke visualization
+- Fabric.js for stroke visualization (loaded from CDN)
+- Native JavaScript, HTML, and CSS
 - GitHub Pages for hosting
-- Pure JavaScript, HTML, and CSS (no frameworks)
 
 ## Local Development
 
@@ -57,7 +57,7 @@ git clone https://github.com/JoshGJPI/neosmart-pen-explorer.git
 cd neosmart-pen-explorer
 
 # Install dependencies
-npm install
+npm install --no-optional
 
 # Start local development server
 npm start
@@ -71,13 +71,15 @@ To deploy to GitHub Pages:
 
 ```bash
 # Make sure you have all the dependencies installed
-npm install
+npm install --no-optional
 
 # Deploy to GitHub Pages
 npm run deploy
 ```
 
-This will deploy the content to the gh-pages branch and make it available at your GitHub Pages URL (e.g., https://username.github.io/neosmart-pen-explorer/).
+This will deploy the entire application directory to the gh-pages branch, making it available at your GitHub Pages URL (e.g., https://username.github.io/neosmart-pen-explorer/).
+
+See `DEPLOYMENT.md` for more detailed information about the deployment process.
 
 ## Privacy
 
